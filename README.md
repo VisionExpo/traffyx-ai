@@ -272,3 +272,5 @@ UrbanEye is designed as:
 - Research-driven
   
 Built to solve **real urban problems**, not just showcase models.
+
+If you like this project, ⭐ star the repo and join the journey.
