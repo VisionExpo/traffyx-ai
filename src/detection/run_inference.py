@@ -9,13 +9,18 @@ Actual model loading and inference will be added incrementally.
 
 from typing import List, Dict
 import cv2
-import numpy
+import numpy as np
+
+from tracking.tracker import Tracker
+from violations.engine import ViolationEngine
+
 
 class DetectionEngine:
     """
     Frame-level object detection engine.
     Stateless by design.
     """
+
     def __init__(
         self,
         model_path: str,
@@ -25,8 +30,6 @@ class DetectionEngine:
         self.model_path = model_path
         self.conf_threshold = conf_threshold
         self.device = device
-
-        # Placeholder for model loading
         self.model = None
 
     def load_model(self):
@@ -39,21 +42,19 @@ class DetectionEngine:
     def infer(self, frame: np.ndarray) -> List[Dict]:
         """
         Run detection on a single frame.
-
-        Args:
-            frame (np.ndarray): Input image frame
-
-        Returns:
-            List[Dict]: List of detection results
         """
         # TODO: Run inference
-        detections = []
+        detections: List[Dict] = []
         return detections
-    
-    def run(video_path: str):
+
+
+def run(video_path: str):
     """
-    Run detection on a video file.
+    Run detection + tracking + violation pipeline on a video file.
     """
+    tracker = Tracker()
+    violation_engine = ViolationEngine()
+
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         raise RuntimeError(f"Unable to open video: {video_path}")
@@ -69,8 +70,16 @@ class DetectionEngine:
             break
 
         detections = engine.infer(frame)
+        tracks = tracker.update(detections)
+        events = violation_engine.process(tracks)
 
-        print(f"[Frame {frame_id}] Detections: {len(detections)}")
+        print(
+            f"[Frame {frame_id}] "
+            f"Detections={len(detections)} | "
+            f"Tracks={len(tracks)} | "
+            f"Events={len(events)}"
+        )
+
         frame_id += 1
 
     cap.release()
