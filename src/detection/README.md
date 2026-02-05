@@ -1,6 +1,6 @@
 # 🚗 Detection Module
 
-The Detection module is responsible for **frame-level object detection** in UrbanEye.
+The Detection module is responsible for **frame-level object detection** in Traffyx-AI.
 
 It converts raw video frames into structured object detections that can be consumed by downstream modules such as tracking and intelligence.
 

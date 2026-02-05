@@ -1,7 +1,7 @@
-# 🧠 UrbanEye  
-## Real-Time AI Traffic Intelligence for Safer, Smarter Cities 👁️🚦
+# 🧠 Traffyx-AI (v1.0)
+## A Real-Time Computer Vision Pipeline for Traffic Analysis
 
-> **UrbanEye** is an AI-powered, edge-deployable traffic surveillance system that automatically detects traffic violations, analyzes vehicle behavior, and generates actionable urban traffic intelligence — in real time.
+> Traffyx-AI is a real-time computer vision system that detects, tracks, and evaluates traffic entities from video streams, producing measurable performance metrics and rule-based decisions suitable for edge deployment.
 
 ---
 
@@ -9,120 +9,95 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
-![Status](https://img.shields.io/badge/status-active-success)
+![Version](https://img.shields.io/badge/version-1.0-blue)
+![Status](https://img.shields.io/badge/status-v1.0%20Frozen-success)
 ![Language](https://img.shields.io/badge/language-Python%203.9+-yellow)
 ![Framework](https://img.shields.io/badge/framework-PyTorch-red)
 ![AI](https://img.shields.io/badge/AI-YOLOv8%20%7C%20ByteTrack-purple)
-![Docker](https://img.shields.io/badge/docker-ready-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 </div>
 
 ---
 
-## 📌 Overview
+## 🎯 The Problem (v1.0 Focus)
 
-**UrbanEye** is a computer vision–based traffic intelligence platform designed for **real-world urban environments**, especially in developing regions where traffic is chaotic and infrastructure is limited.
+Many traffic analytics systems are over-engineered for demos but are fragile in real-world pipelines. They are often opaque in performance, with no clear visibility into latency or FPS, and are not designed with edge computing constraints in mind.
 
-### Who is it for?
-- Municipal traffic departments
-- Smart city initiatives
-- Campuses, industrial zones, toll booths
-- Researchers & AI engineers working on vision-based surveillance
-
-### Why does it exist?
-Existing traffic systems are:
-- 💸 Extremely expensive
-- ☁️ Cloud-dependent
-- 👮 Heavily manual
-- ❌ Not adaptable to real traffic conditions
-
-**UrbanEye brings real-time, automated, privacy-aware traffic intelligence — running locally on affordable hardware.**
+**Traffyx-AI v1.0 focuses on engineering correctness, observability, and pipeline realism.** It serves as a robust foundation for building advanced traffic intelligence systems.
 
 ---
 
-## ❌ Problem
+## ✅ v1.0 Scope
 
-Modern cities struggle with:
-- Manual traffic violation monitoring
-- Delayed enforcement and weak compliance
-- Lack of real-time traffic analytics
-- High dependency on proprietary, black-box systems
+This version establishes a stable, performant, and observable core pipeline.
 
-### Why current solutions fail:
-- Require costly centralized infrastructure
-- Do not scale to dense, unstructured traffic
-- Poor accuracy in mixed vehicle environments
-- No actionable intelligence beyond basic detection
+### What's in v1.0:
+- ✅ **Offline Video Input:** Process standard `.mp4` video files.
+- ✅ **Object Detection:** Frame-level detection of vehicles and pedestrians using YOLOv8.
+- ✅ **Multi-Object Tracking:** Assign and maintain stable IDs for objects across frames using ByteTrack.
+- ✅ **Rule-Based Logic:** A basic engine for implementing time-based rules (e.g., object counting, zone entry).
+- ✅ **Performance Instrumentation:** Built-in logging for FPS, latency, and memory usage.
+- ✅ **CLI-Based Operation:** A command-line interface for running the pipeline.
+- ✅ **Visualized Output:** Generates an annotated video with bounding boxes, track IDs, and performance metrics.
+- ✅ **Structured Logs:** Outputs JSON logs for detections, tracks, and rule triggers.
 
----
-
-## ✅ Solution
-
-**UrbanEye introduces an edge-first, AI-driven traffic intelligence pipeline** that:
-
-- Detects vehicles and pedestrians in real time
-- Tracks objects across frames with consistent identities
-- Estimates vehicle speed using trajectory analysis
-- Detects violations like helmet non-compliance and overspeeding
-- Enables cross-camera vehicle re-identification
-- Provides actionable dashboards for traffic authorities
-
-### What makes it different?
-- 🧠 Spatio-temporal reasoning (not frame-by-frame rules)
-- ⚡ Optimized for edge GPUs
-- 🔐 Privacy-first design
-- 🧩 Modular, extensible architecture
-- 💯 100% open-source
+### What's Explicitly Excluded from v1.0:
+- ❌ Live RTSP stream processing
+- ❌ Multi-camera fusion or Re-Identification (Re-ID)
+- ❌ Cloud orchestration or deployment
+- ❌ Model training or fine-tuning
+- ❌ Web-based UI dashboards
+- ❌ Alerting or notification systems
+- ❌ Database persistence for events
 
 ---
 
-## 🧠 Architecture
+## 🏗️ v1.0 Architecture
 
-### High-Level System Design
+The v1.0 architecture is a **strict, linear pipeline** designed for clarity and performance measurement. Each stage processes data and passes it to the next.
 
+### High-Level Pipeline
 ```mermaid
 graph TD
-    A[Camera / Video Stream] --> B[YOLOv8 Detection]
-    B --> C[Multi-Object Tracking - ByteTrack]
-    C --> D[Spatio-Temporal Analysis Engine]
-
-    D --> E[Speed Estimation]
-    D --> F[Helmet Violation Detection]
-    D --> G[Feature Extraction & Re-ID]
-
-    G --> H[FAISS Vector Database]
-
-    E --> I[Violation Events DB]
-    F --> I
-
-    I --> J[FastAPI Backend]
-    J --> K[Web Dashboard / Analytics]
+    A[Video Frame] --> B[DetectionEngine]
+    B --> C[Tracker]
+    C --> D[ViolationEngine]
+    D --> E[Metrics Logger]
+    E --> F[Visualizer / Output]
 ```
+
+### Module Responsibilities
+
+| Module            | Responsibility                                                              | State     |
+| ----------------- | --------------------------------------------------------------------------- | --------- |
+| **DetectionEngine** | Loads model, runs inference on frames, filters detections.                  | Stateless |
+| **Tracker**         | Assigns persistent IDs, manages track lifecycle (entry, exit, occlusion).   | Stateful  |
+| **ViolationEngine** | Applies time-based rules to tracks, triggers events, suppresses duplicates. | Stateful  |
+| **Metrics Logger**  | Measures latency, FPS, and memory usage per stage.                          | Stateless |
+| **Runner/Pipeline** | Orchestrates the flow of data through the pipeline.                         | Stateless |
+
+> **Architectural Rule:** A module's statefulness is fixed. A stateless module storing state is a design violation.
 
 ---
 
-### Data Flow:
-```mermaid
-graph TD
-    A[Input] --> B[Detection]
-    B --> C[Tracking]
-    C --> D[Intelligence]
-    D --> E[Events]
-    E --> F[Visualization]
-```
+## 📥 Inputs & 📤 Outputs
+
+The system has a clearly defined I/O contract for v1.0.
+
+- **Input:**
+  1.  A video file (e.g., `data/sample.mp4`).
+  2.  A configuration file (`params.yaml`) for all thresholds and settings.
+
+- **Output:**
+  1.  An annotated output video file.
+  2.  Structured JSON logs for:
+      -   `detections.json`
+      -   `tracks.json`
+      -   `events.json`
+      -   `performance.json`
 
 ---
-
-## ✨ Features
-- 🚗 Real-time vehicle & pedestrian detection
-- 🧍 Multi-object tracking with persistent IDs
-- ⏱️ Vehicle speed estimation via trajectory analysis
-- 🪖 Helmet non-compliance detection (rider & pillion)
-- 🔍 Vehicle re-identification across time and cameras
-- 📊 Interactive traffic analytics dashboard
-- 🔐 Privacy-aware processing (face/plate masking)
 
 ## 🛠️ Tech Stack
 ### Core
@@ -134,21 +109,9 @@ graph TD
 - YOLOv8 (Ultralytics)
 - PyTorch
 - ByteTrack
-- FAISS
-- PaddleOCR / EasyOCR (planned)
 
-### Backend
-- FastAPI
-- SQLite / DuckDB
-
-### Frontend
-- Dash & Plotly (Phase 1)
-- React + Tailwind (Planned)
-
-### Infra / DevOps
-- Docker
-- TensorRT (Planned)
-- RTSP Streaming
+### Configuration
+- PyYAML
 
   ---
   

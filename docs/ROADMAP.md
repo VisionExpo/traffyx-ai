@@ -1,6 +1,6 @@
-# 🗺️ UrbanEye — Project Roadmap
+# 🗺️ Traffyx-AI — Project Roadmap
 
-This roadmap outlines the phased development of **UrbanEye**, from a core computer vision pipeline to a full-fledged, edge-deployable traffic intelligence system.
+This roadmap outlines the phased development of **Traffyx-AI**, from a core computer vision pipeline to a full-fledged, edge-deployable traffic intelligence system.
 
 The roadmap is designed to:
 - Enable incremental, testable progress
@@ -143,7 +143,7 @@ A solid foundation that allows the system to scale without major refactors.
 **Status:** 🔮 Planned
 
 ### Objectives
-- Prepare UrbanEye for real-world deployment
+- Prepare Traffyx-AI for real-world deployment
 - Ensure ethical, privacy-aware usage
 
 ### Key Features
@@ -188,7 +188,7 @@ A solid foundation that allows the system to scale without major refactors.
 
 ## 📌 Roadmap Philosophy
 
-UrbanEye follows a **research-driven, production-aware** roadmap:
+Traffyx-AI follows a **research-driven, production-aware** roadmap:
 - Build simple → validate → scale
 - Favor explainable logic over black-box predictions
 - Prioritize real-world constraints over benchmarks

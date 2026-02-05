@@ -88,7 +88,7 @@ def run(video_path: str):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="UrbanEye Detection Pipeline")
+    parser = argparse.ArgumentParser(description="Traffyx-AI Detection Pipeline")
     parser.add_argument("--video", type=str, required=True, help="Path to video file")
 
     args = parser.parse_args()

@@ -1,6 +1,6 @@
-# 🧠 UrbanEye — System Architecture
+# 🧠 Traffyx-AI — System Architecture
 
-UrbanEye is designed as an **edge-first, modular AI traffic intelligence system** that converts raw video streams into real-time, actionable traffic insights.
+Traffyx-AI is designed as an **edge-first, modular AI traffic intelligence system** that converts raw video streams into real-time, actionable traffic insights.
 
 The architecture prioritizes:
 - Low latency
@@ -141,7 +141,7 @@ graph TD
 
 ### 4️⃣ Spatio-Temporal Intelligence Engine
 
-This is the **core brain** of UrbanEye.
+This is the **core brain** of Traffyx-AI.
 
 **Responsibilities**
 
@@ -293,7 +293,7 @@ graph LR
 
 ## 🧠 Design Philosophy
 
-UrbanEye is not just a detection system.
+Traffyx-AI is not just a detection system.
 
 It is a **traffic intelligence engine** designed to:
 
@@ -302,7 +302,7 @@ It is a **traffic intelligence engine** designed to:
 * Assist human decision-makers
 
 > Detection answers *what is visible*.
-> UrbanEye answers *what is happening*.
+> Traffyx-AI answers *what is happening*.
 
 ---
 
