@@ -188,6 +188,17 @@ python src/violations/speed_test.py
 | Latency         | < 100 ms     |
 | Deployment      | Edge / Local |
 
+### 📈 Real-World Metrics (v1.0)
+
+Performance is measured per-frame and logged to `logs/*.jsonl`.
+
+<div align="center">
+  <img src="assets/charts/fps_over_time.png" width="45%" alt="FPS Stability">
+  <img src="assets/charts/latency_e2e_over_time.png" width="45%" alt="E2E Latency">
+</div>
+
+*To reproduce these charts, run `python scripts/plot_metrics.py` after processing a video.*
+
 ## 📊 Benchmarks
 
 | Capability           | UrbanEye  | Traditional CCTV |
