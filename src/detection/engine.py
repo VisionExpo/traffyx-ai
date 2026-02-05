@@ -1,5 +1,6 @@
 import numpy as np
 from typing import List, Dict
+import torch
 from ultralytics import YOLO
 
 class DetectionEngine:
@@ -10,9 +11,15 @@ class DetectionEngine:
     def __init__(self, model_path: str, conf_threshold: float = 0.5, device: str = "cpu"):
         self.model_path = model_path
         self.conf_threshold = conf_threshold
-        self.device = device
+        self.device = self._resolve_device(device)
         self.model = None
         self._load_model()
+
+    def _resolve_device(self, device_config: str) -> str:
+        """Resolve 'auto' to 'cuda' or 'cpu'."""
+        if device_config == "auto":
+            return "cuda" if torch.cuda.is_available() else "cpu"
+        return device_config
 
     def _load_model(self):
         """Load model and perform warm-up inference."""
@@ -23,7 +30,8 @@ class DetectionEngine:
             # Warm-up run (1 dummy frame)
             print("Running warm-up inference...")
             dummy_frame = np.zeros((640, 640, 3), dtype=np.uint8)
-            self.model(dummy_frame, device=self.device, verbose=False)
+            # Enable half precision (FP16) if using CUDA
+            self.model(dummy_frame, device=self.device, verbose=False, half=(self.device == "cuda"))
             print("Model loaded and warmed up.")
         except Exception as e:
             raise RuntimeError(f"Failed to load model: {e}")
@@ -46,7 +54,14 @@ class DetectionEngine:
             return []
 
         # Run inference
-        results = self.model(frame, conf=self.conf_threshold, device=self.device, verbose=False)
+        # half=True is faster on CUDA (Tensor Cores)
+        results = self.model(
+            frame, 
+            conf=self.conf_threshold, 
+            device=self.device, 
+            verbose=False,
+            half=(self.device == "cuda")
+        )
         detections = []
 
         for result in results:
