@@ -1,6 +1,7 @@
 import cv2
 import os
 import time
+import datetime
 from typing import Dict
 
 from detection.engine import DetectionEngine
@@ -30,7 +31,9 @@ class PipelineRunner:
         )
         
         # Initialize Logger
-        self.logger = MetricsLogger(log_path="logs/metrics.jsonl")
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_path = f"logs/run_{timestamp}.jsonl"
+        self.logger = MetricsLogger(log_path=log_path)
 
     def run(self):
         if not os.path.exists(self.video_path):
@@ -75,14 +78,20 @@ class PipelineRunner:
                     self._validate_outputs(detections, tracks)
 
                 # Calculate E2E latency
-                timings["e2e"] = sum(timings.values())
+                timings["e2e"] = (
+                    timings["decode"]
+                    + timings["inference"]
+                    + timings["tracking"]
+                    + timings["postprocess"]
+                )
                 
                 # Calculate Rolling FPS
                 self.fps_window.append(timings["e2e"])
                 if len(self.fps_window) > self.window_size:
                     self.fps_window.pop(0)
                 
-                current_fps = 1000.0 / (sum(self.fps_window) / len(self.fps_window)) if self.fps_window else 0.0
+                avg_latency = sum(self.fps_window) / len(self.fps_window)
+                current_fps = 1000.0 / (avg_latency + 1e-6) if self.fps_window else 0.0
 
                 # 5. Logging
                 log_data = {
